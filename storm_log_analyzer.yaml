@@ -1,0 +1,45 @@
+# This is a very meaningful paragraph
+# describing my_first_topology
+
+name: storm_log_analyzer
+
+workers: 2
+
+serializer: json
+
+topology:
+
+    - spout:
+            name: kafka-test
+            type: kafka
+            options:
+                # The Kafka topic to stream from.
+                # Required.
+                topic: teste
+
+                # ZooKeeper connection string. Comma-separated list of ZooKeeper
+                # servers.
+                # Required.
+                zk_hosts: localhost:2181
+
+                # Root path in ZooKeeper to store consumer offsets.
+                # Defaults to: /pyleus-kafka-offsets/<topology name>
+                zk_root: /pyleus-kafka-offsets/storm_log_analyzer
+
+                # Kafka consumer ID.
+                # Defaults to: pyleus-<topology name>
+                consumer_id: pyleus-storm_log_analyzer
+
+                # Whether the initial offset should be that specified by
+                # start_offset_time (true) or the head of the stream (false).
+                # Defaults to false.
+                from_start: false
+
+                # The offset time to start with if from_start is true.
+                # Defaults to the earliest offset time in the stream.
+                start_offset_time: 1398971060
+    - bolt:
+        name: process_log_bolt
+        module: storm_log_analyzer.bolt.process_log_bolt
+        groupings:
+          - shuffle_grouping: kafka-test
