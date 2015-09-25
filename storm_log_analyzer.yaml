@@ -15,7 +15,7 @@ topology:
             options:
                 # The Kafka topic to stream from.
                 # Required.
-                topic: teste
+                topic: logs
 
                 # ZooKeeper connection string. Comma-separated list of ZooKeeper
                 # servers.
@@ -43,3 +43,9 @@ topology:
         module: storm_log_analyzer.bolt.process_log_bolt
         groupings:
           - shuffle_grouping: kafka-test
+
+    - bolt:
+        name: alarm_bolt
+        module: storm_log_analyzer.bolt.alarm_bolt
+        groupings:
+          - shuffle_grouping: process_log_bolt
